@@ -70,17 +70,32 @@ def check_file(filepath):
                 heredoc_string.join(line)
 
 def search_heredoc_string(string):
+    """
+    Go through the heredoc string itself and search for
+    gettext strings, returning an array
+    """
+    gettext_strings = []
     index = 0
     result = -1
     needle_beg = '{$' + KEYWORD + '('
+    beg_offset = len(needle_beg) + 1
     needle_end = ')}'
     keepgoing = True
-    while keepgoing = True:
-        result = string.find(needle_beg, index
+    while keepgoing == True:
+        result = string.find(needle_beg, index)
         if result >= 0:
-            
+            slice_start = result + beg_offset
+            index = result + 1
+            result = string.find(needle_end, index)
+            if result >= 0:
+                # We subtract one from the slice_end to deal with the ending
+                # quotation mark
+                slice_end = result - 1
+                gettext_strings.append(string[slice_start:slice_end])
+        else:
+            keepgoing = False  
          
-    return []
+    return gettext_strings
     
 def output_messages_file(output_file, messages):
     pass
