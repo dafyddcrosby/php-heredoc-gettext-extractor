@@ -1,5 +1,6 @@
 PHP heredoc gettext extractor
 =============================
+
 Copyright (C) 2012 Dafydd Crosby
 
 This script can be used to extract gettext strings from inside heredoc 
@@ -10,12 +11,14 @@ it in the first place ;-)
 
 Usage
 -----
+
 Run `extract.py [files]`, and it should output to "hd_messages.po".
 After that, use msgcat to combine "hd_messages.po" with whatever .po file you're
 currently using. Then use your regular gettext conversion flow.
 
 TODO
 ----
+
 Write some tests that check for broken gettext blocks
 Ensure we're getting heredoc strings from inside PHP blocks
 Make 'search_heredoc_string' less ugly
@@ -25,11 +28,13 @@ Use getopts...?
 
 FAQ
 ---
+
 Q. Why was this written in Python and not PHP?
 A. Because deadlines called for it :-)
 
 License
 -------
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in 
 the Software without restriction, including without limitation the rights to 
