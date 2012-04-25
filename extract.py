@@ -8,9 +8,6 @@ This script pulls gettext translations out of PHP heredoc strings
 USAGE:
 extract.py [files]
 
-TODO:
-cleaner searching of gettext strings
-
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in 
 the Software without restriction, including without limitation the rights to 
@@ -32,10 +29,16 @@ SOFTWARE.
 
 import sys
 
-DEBUG = True
+DEBUG = False
 KEYWORD = "_"
 
 def check_file(filepath):
+    """
+    This goes through the PHP file and extracts the heredoc strings so that
+    they can be searched for gettext strings.
+
+    TODO: Ensure it's getting heredoc strings from inside PHP block
+    """
     try:
         handle = open(filepath, "r")
     except IOError, err:
@@ -64,15 +67,19 @@ def check_file(filepath):
                 inheredoc = False
                 if DEBUG:
                     print('exiting heredoc word: ' + heredoc_word)
-                gettext_strings.join(search_heredoc_string(heredoc_string))
+                    print('heredoc string is: ' + heredoc_string)
+                gettext_strings.extend(search_heredoc_string(heredoc_string))
                 heredoc_string = ""
             else:
                 heredoc_string.join(line)
+    return gettext_strings
 
 def search_heredoc_string(string):
     """
     Go through the heredoc string itself and search for
     gettext strings, returning an array
+    
+    TODO: Make this less ugly
     """
     gettext_strings = []
     index = 0
