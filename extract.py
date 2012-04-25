@@ -36,8 +36,6 @@ def check_file(filepath):
     """
     This goes through the PHP file and extracts the heredoc strings so that
     they can be searched for gettext strings.
-
-    TODO: Ensure it's getting heredoc strings from inside PHP block
     """
     try:
         handle = open(filepath, "r")
@@ -47,7 +45,6 @@ def check_file(filepath):
 
     inheredoc = False
     heredoc_word = ''
-    ingettext = False
     heredoc_string = ''
     gettext_strings = []
     for line in handle:
@@ -71,15 +68,13 @@ def check_file(filepath):
                 gettext_strings.extend(search_heredoc_string(heredoc_string))
                 heredoc_string = ""
             else:
-                heredoc_string.join(line)
+                heredoc_string += line
     return gettext_strings
 
 def search_heredoc_string(string):
     """
     Go through the heredoc string itself and search for
     gettext strings, returning an array
-    
-    TODO: Make this less ugly
     """
     gettext_strings = []
     index = 0
@@ -104,19 +99,37 @@ def search_heredoc_string(string):
          
     return gettext_strings
     
-def output_messages_file(output_file, messages):
-    pass
+def output_message_lines(message):
+    """
+    This creates the gettext lines for the po file
+    """
+    return "msgid \"" + message + "\"\nmsgstr \"\"\n\n"
 
 def main():
+    """
+    This is what ties it all together.
+    """
     php_files = sys.argv[1:]
-    output_file = "messages.po"
+    output_file = "hd_messages.po"
     messages = []
     
     if DEBUG:
         print(php_files)
 
     for filepath in php_files:
-        messages.append(check_file(filepath))
+        if DEBUG:
+            print("Opening: " + filepath)
+        messages.extend(check_file(filepath))
+    
+    # Remove duplicates
+    messages = list(set(messages))
+    
+    file_handle = open(output_file, 'w')
+    for message in messages:
+        if DEBUG:
+            print(output_message_lines(message))
+        file_handle.write(output_message_lines(message))
+    file_handle.close()        
 
 if __name__ == "__main__":
     main()
